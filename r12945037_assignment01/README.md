@@ -19,23 +19,23 @@ This project provides a **Command-Line Interface (CLI)** application to simulate
 ## Run the CLI application
 To start the interactive command line interface:
 ```
-python main.py
+python3 main.py
 ```
 
 ## Process Commands from a File
 To execute a set of commands from a file:
 ```
-python main.py --file input.txt
+python3 main.py --file input.txt
 ```
 
-## Usage Instructions:
+## Scripts Usage Instructions:
 (Assume you have install Python3.10** or higher)
 
 1. Make the scripts executable: `chmod +x build.sh run.sh`
 
 2. To set up the environment:
-- Run the build.sh script to set up the virtual environment and install dependencies: `./build.sh`
+    - Run the build.sh script to set up the virtual environment and install dependencies: `./build.sh`
 
 3. To run the application:
-- Once the environment is set up, you can use the run.sh script to run the codebase: `./run.sh`
-- If you want to pass a file with commands to the application, use: `./run.sh --file input.txt`
+    - Once the environment is set up, you can use the run.sh script to run the codebase: `./run.sh`
+    - If you want to pass a file with commands to the application, use: `./run.sh --file input.txt`
