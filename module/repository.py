@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime
+
 class MarketplaceRepository:
     def __init__(self, db_name="marketplace.db"):
         self.conn = sqlite3.connect(db_name, check_same_thread=False)
@@ -7,11 +8,8 @@ class MarketplaceRepository:
         self._create_tables()
 
     def _create_tables(self):
-        # create two tables
-        # users table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                                 username TEXT PRIMARY KEY COLLATE NOCASE)''')
-        # listings table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS listings (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 title TEXT,
@@ -21,13 +19,11 @@ class MarketplaceRepository:
                                 username TEXT,
                                 created_at TEXT,
                                 FOREIGN KEY (username) REFERENCES users(username))''')
-
         self.conn.commit()
 
     def user_exists(self, username: str) -> bool:
         self.cursor.execute("SELECT 1 FROM users WHERE username = ?", (username,))
-        users = self.cursor.fetchone()
-        return  users is not None
+        return self.cursor.fetchone() is not None
 
     def add_user(self, username: str) -> str:
         if self.user_exists(username):
@@ -43,17 +39,14 @@ class MarketplaceRepository:
         self.cursor.execute("INSERT INTO listings (title, description, price, category, username, created_at) VALUES (?, ?, ?, ?, ?, ?)",
                             (title, description, price, category, username, created_at))
         self.conn.commit()
-        return str(self.cursor.lastrowid)
+        return str(self.cursor.lastrowid + 100000)
 
     def get_listing(self, username: str, listing_id: int) -> str:
         if not self.user_exists(username):
             return "Error - unknown user"
         self.cursor.execute("SELECT title, description, price, created_at, category, username FROM listings WHERE id = ?", (listing_id,))
         result = self.cursor.fetchone()
-        if result:
-            return "|".join(map(str, result))
-        else:
-            return "Error - not found"
+        return "|".join(map(str, result)) if result else "Error - not found"
 
     def delete_listing(self, username: str, listing_id: int) -> str:
         self.cursor.execute("SELECT username FROM listings WHERE id = ?", (listing_id,))
@@ -69,12 +62,9 @@ class MarketplaceRepository:
     def get_listings_by_category(self, username: str, category: str) -> str:
         if not self.user_exists(username):
             return "Error - unknown user"
-        self.cursor.execute("SELECT title, description, price, created_at FROM listings WHERE category = ? ORDER BY created_at DESC", (category,))
+        self.cursor.execute("SELECT title, description, price, created_at, category, username FROM listings WHERE category = ? ORDER BY created_at DESC", (category,))
         results = self.cursor.fetchall()
-        if results:
-            return "\n".join("|".join(map(str, row)) for row in results)
-        else: 
-            return "Error - category not found"
+        return "\n".join("|".join(map(str, row)) for row in results) if results else "Error - category not found"
 
     def get_top_category(self, username: str) -> str:
         if not self.user_exists(username):
