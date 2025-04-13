@@ -29,4 +29,4 @@ jobs:
     # Step 4: Run the unit tests
     - name: Run unit tests
       run: |
-        python -m unittest discover -s tests  # Discover and run all unit tests in the 'tests' folder
+        python -m unittest discover -s tests -p "*.py"  # Specify the directory and pattern for test discovery
