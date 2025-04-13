@@ -35,18 +35,29 @@ class MarketplaceRepository:
     def add_listing(self, username: str, title: str, description: str, price: int, category: str) -> str:
         if not self.user_exists(username):
             return "Error - unknown user"
+        
         created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.cursor.execute("INSERT INTO listings (title, description, price, category, username, created_at) VALUES (?, ?, ?, ?, ?, ?)",
                             (title, description, price, category, username, created_at))
         self.conn.commit()
+        # Return the ID of the newly created listing (with an offset if necessary)
         return str(self.cursor.lastrowid + 100000)
 
+
     def get_listing(self, username: str, listing_id: int) -> str:
+        # Ensure the user exists first
         if not self.user_exists(username):
             return "Error - unknown user"
+        
+        # Check if the listing exists
         self.cursor.execute("SELECT title, description, price, created_at, category, username FROM listings WHERE id = ?", (listing_id,))
         result = self.cursor.fetchone()
-        return "|".join(map(str, result)) if result else "Error - not found"
+        
+        if result:
+            return "|".join(map(str, result))  # Return the formatted string if listing is found
+        else:
+            return "Error - not found"  # Return error message if listing is not found
+
 
     def delete_listing(self, username: str, listing_id: int) -> str:
         self.cursor.execute("SELECT username FROM listings WHERE id = ?", (listing_id,))
