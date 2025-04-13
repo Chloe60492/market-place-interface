@@ -39,3 +39,15 @@ python3 main.py --file input.txt
 3. To run the application:
     - Once the environment is set up, you can use the run.sh script to run the codebase: `./run.sh`
     - If you want to pass a file with commands to the application, use: `./run.sh --file input.txt`
+
+## Running Tests
+Unit tests are provided to ensure that the application works correctly. To run them locally, use the following command:
+```
+python -m unittest discover -s tests -p "*.py"
+```
+
+## Continuous Integration with GitHub Actions
+
+This repository uses GitHub Actions for continuous integration. The tests are automatically run whenever a pull request is made to the `main` branch.
+
+To trigger the test action, simply create a pull request to the `main` branch. GitHub Actions will automatically run the tests and display the results.
